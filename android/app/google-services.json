@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "661163183847",
+    "project_id": "genai-financial-assistan-8401a",
+    "storage_bucket": "genai-financial-assistan-8401a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661163183847:android:63ee1e3739610440961c42",
+        "android_client_info": {
+          "package_name": "com.example.ai_fin_assist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0B-uxyZK4xjOhSOwmBZBWLm1kn0yclI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
