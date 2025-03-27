@@ -81,7 +81,7 @@ class HomeScreen extends StatelessWidget {
             child: Text(
               "MoneyMap",
               style: GoogleFonts.poppins(
-                fontSize: 48, // Large font
+                fontSize: 60, // Large font
                 fontWeight: FontWeight.bold,
                 color: Colors.black, // Black color
               ),
