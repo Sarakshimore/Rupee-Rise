@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Added import for GoogleFonts
+import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
 import 'login_screen.dart';
 import 'chat_screen.dart';
@@ -8,15 +8,15 @@ import 'profile_screen.dart';
 class HomeScreen extends StatelessWidget {
   final AuthService _authService = AuthService();
 
-  HomeScreen({super.key});
+  HomeScreen({super.key}); // Non-const constructor
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white, // White background
       appBar: AppBar(
-        backgroundColor: Colors.white, // White app bar
-        elevation: 0, // No shadow
+        backgroundColor: Colors.white,
+        elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu, color: Color(0xFF4CAF50)), // Green hamburger icon
@@ -57,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(color: Colors.black),
               ),
               onTap: () {
-                Navigator.pop(context); // Close drawer
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const ProfileScreen()),
@@ -83,7 +83,19 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
+          // App Name in Main Section
+          Center(
+            child: Text(
+              "MoneyMap",
+              style: GoogleFonts.poppins(
+                fontSize: 60, // Large font
+                fontWeight: FontWeight.bold,
+                color: Colors.black, // Black color
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
@@ -95,25 +107,20 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          const Spacer(), // Pushes chat icon to center vertically
-          Center(
-            child: IconButton(
-              icon: const Icon(
-                Icons.chat_bubble_outline,
-                size: 50,
-                color: Color(0xFF4CAF50), // Green chat icon
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ChatScreen()),
-                );
-              },
-            ),
-          ),
-          const Spacer(), // Balances the layout
+          const Spacer(), // Pushes content to top, leaving space for FAB
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ChatScreen()),
+          );
+        },
+        backgroundColor: const Color(0xFF4CAF50), // Green
+        child: const Icon(Icons.chat_bubble_outline, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Bottom right
     );
   }
 }
