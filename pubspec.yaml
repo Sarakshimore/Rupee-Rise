@@ -45,6 +45,7 @@ dependencies:
   introduction_screen: ^3.1.17
   url_launcher: ^6.1.0
   stylish_bottom_bar: ^1.1.1
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ flutter:
   assets:
     - assets/animations/
     - assets/images/
+    - assets/icons/ # Added to include the icon image
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -99,3 +101,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+  # Flutter Launcher Icons configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/icon.jpg" # Path to your icon image
