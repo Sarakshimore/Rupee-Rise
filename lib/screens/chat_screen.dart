@@ -39,7 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   String createPrompt(String userMessage) {
-    String basePrompt = "You are a financial assistant for beginners in India and your name is Fin Assist. "
+    String basePrompt = "You are a financial assistant for beginners in India and your name is Rupee Guru . "
         "Answer the following question in simple terms, avoiding complex jargon. "
         "Use **text** to indicate bold text in your response: $userMessage";
 
@@ -181,7 +181,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Chat with Fin Assist",
+          "Chat with Rupee Guru",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color(0xFF4CAF50),
@@ -209,7 +209,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isUser ? 'You' : 'Fin Assist',
+                          isUser ? 'You' : 'Rupee Guru',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],

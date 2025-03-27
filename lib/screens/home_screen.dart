@@ -87,7 +87,7 @@ class HomeScreen extends StatelessWidget {
           // App Name in Main Section
           Center(
             child: Text(
-              "MoneyMap",
+              "Get Started",
               style: GoogleFonts.poppins(
                 fontSize: 60, // Large font
                 fontWeight: FontWeight.bold,
