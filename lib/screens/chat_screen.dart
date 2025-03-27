@@ -14,7 +14,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, dynamic>> _messages = [];
-  static const String apiKey = 'AIzaSyB-GRQ2C-XykwZcXv3e1HuMjgnPZjhxzdI';
+  static const String apiKey = 'AIzaSyB-GRQ2C-XykwZcXv3e1HuMjgnPZjhxzdI'; // Replace with a valid API key
   final String apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey';
   Map<String, dynamic>? _userProfile;
   bool _isGenerating = false;
@@ -24,6 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _loadUserProfile();
+    _addWelcomeMessage(); // Add the welcome message with "Namaste"
   }
 
   Future<void> _loadUserProfile() async {
@@ -38,9 +39,22 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  void _addWelcomeMessage() {
+    setState(() {
+      _messages.add({
+        'sender': 'ai',
+        'text': 'Namaste! I am Rupee Guru, your financial assistant for beginners in India. How can I help you today?',
+        'richText': _parseMarkdownToRichText('Namaste! I am Rupee Guru, your financial assistant for beginners in India. How can I help you today?'),
+        'interrupted': false,
+      });
+    });
+  }
+
   String createPrompt(String userMessage) {
-    String basePrompt = "You are a financial assistant for beginners in India and your name is Rupee Guru . "
+    String basePrompt = "You are a financial assistant for beginners in India and your name is Rupee Guru. "
         "Answer the following question in simple terms, avoiding complex jargon. "
+        "Do not say 'Namaste' in your response, as you have already greeted the user. "
+        "Don't always say hi there in your responses when something is asked"
         "Use **text** to indicate bold text in your response: $userMessage";
 
     if (_userProfile != null) {
@@ -188,10 +202,10 @@ class _ChatScreenState extends State<ChatScreen> {
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20), // Adjust this value for more/less rounding
+            bottom: Radius.circular(20),
           ),
         ),
-        elevation: 4, // Adds a slight shadow for depth
+        elevation: 4,
       ),
       body: Container(
         color: Colors.grey[100],
@@ -204,7 +218,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   final message = _messages[index];
                   final isUser = message['sender'] == 'user';
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                     child: Column(
                       crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                       children: [
