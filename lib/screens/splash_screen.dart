@@ -16,20 +16,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       // Check auth state and navigate accordingly
       final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => HomeScreen()),
-        );
-      } else {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const LoginScreen()),
         );
-      }
+
     });
   }
 
@@ -43,13 +37,13 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Lottie.asset(
               'assets/splash_animation.json',
-              width: 200,
-              height: 200,
+              width: 400,
+              height: 400,
               fit: BoxFit.fill,
             ),
             const SizedBox(height: 20),
             Text(
-              "Finance AI",
+              "Rupee Rise",
               style: GoogleFonts.poppins(
                 fontSize: 36,
                 fontWeight: FontWeight.bold,

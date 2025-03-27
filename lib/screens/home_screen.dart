@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          "Finance AI",
+          "Rupee Rise",
           style: GoogleFonts.poppins(
             fontSize: 24,
             fontWeight: FontWeight.bold,

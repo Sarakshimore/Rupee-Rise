@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 60),
                 const Text(
-                  "Money Mate",
+                  "Rupee Rise",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 36,
@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Text(
                     "Don't have an account? Sign Up",
                     style: TextStyle(
-                      color: Color(0xFF4CAF50abc),
+                      color: Color.fromARGB(201, 0, 0, 0),
                       fontSize: 16,
                     ),
                   ),

@@ -39,7 +39,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 60),
                 // Title
                 const Text(
-                  "Join Finance AI",
+                  "Join Rupee Rise",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 36,
