@@ -3,7 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/home_screen.dart';
+import 'screens/home_screen.dart'; // Import Learning screen
+import 'screens/profile_screen.dart'; // Import Profile screen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,10 +24,10 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF4CAF50), // Green theme
         scaffoldBackgroundColor: Colors.white, // White background
       ),
-      home: const SplashScreenWithAuth(), // Use auth-aware splash screen
+      home: const SplashScreen(), // Use auth-aware splash screen
       routes: {
         '/login': (context) => const LoginScreen(),
-        '/home': (context) => HomeScreen(),
+        '/home': (context) => const MainScreen(), // Update route to MainScreen
       },
     );
   }
@@ -41,9 +42,61 @@ class SplashScreenWithAuth extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // Show SplashScreen initially
-        return const SplashScreen();
+        if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.hasData) {
+            return const MainScreen(); // Navigate to MainScreen if logged in
+          } else {
+            return const LoginScreen(); // Navigate to LoginScreen if not logged in
+          }
+        }
+        return const SplashScreen(); // Show SplashScreen while loading
       },
+    );
+  }
+}
+
+// Main Screen with Bottom Navigation Bar
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    HomeScreen(),     // Learning Screen (make sure to create this screen)
+    ProfileScreen(),    // Profile Screen (make sure to create this screen)
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex], // Display the selected page
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
+      ),
     );
   }
 }
