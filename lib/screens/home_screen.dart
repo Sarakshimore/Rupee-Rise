@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => LoginScreen()),
                 );
               },
-              child: const Text("Sarakshi logout"),
+              child: const Text("Logout"),
             ),
           ],
         ),
