@@ -21,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: AppBar(
         backgroundColor: const Color(0xFF4CAF50),
         elevation: 0,
@@ -34,77 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         centerTitle: true,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const HomeScreen()),
-              );
-            },
-          ),
-        ],
-      ),
 
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Color(0xFF4CAF50),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Rupee Rise',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    'Smart Money Management',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.logout, color: Color(0xFF4CAF50)),
-              title: Text(
-                'Logout',
-                style: GoogleFonts.poppins(
-                  color: Colors.black87,
-                  fontSize: 16,
-                ),
-              ),
-              onTap: () async {
-                await _authService.signOut();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                );
-              },
-            ),
-
-          ],
-        ),
       ),
       body: _showLearning ? _buildLearningContent(context) : _buildHomeContent(context),
       floatingActionButton: FloatingActionButton(
@@ -130,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: const BoxDecoration(
             color: Color(0xFF4CAF50),
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30),
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10),
             ),
           ),
           child: Column(
@@ -337,14 +266,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildInfographicCard(
                   context: context,
                   title: 'Risk Management',
-                  diagramColor: Color(0xFF4CAF50),
+                  diagramColor: const Color(0xFF4CAF50),
                   explanation: 'Diversification reduces risk by spreading investments across different assets.',
                 ),
                 const SizedBox(height: 10),
                 _buildInfographicCard(
                   context: context,
                   title: 'Asset Allocation',
-                  diagramColor: Color(0xFF4CAF50),
+                  diagramColor: const Color(0xFF4CAF50),
                   explanation: 'Allocate assets based on your goals and risk tolerance.',
                 ),
               ],

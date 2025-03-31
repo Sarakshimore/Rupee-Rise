@@ -55,7 +55,6 @@ class SplashScreenWithAuth extends StatelessWidget {
   }
 }
 
-// Main Screen with Bottom Navigation Bar
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -67,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    HomeScreen(),     // Learning Screen (make sure to create this screen)
+    HomeScreen(),   // Learning Screen (make sure to create this screen)
     ProfileScreen(),    // Profile Screen (make sure to create this screen)
   ];
 
@@ -100,3 +99,49 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+
+// // Main Screen with Bottom Navigation Bar
+// class MainScreen extends StatefulWidget {
+//   const MainScreen({super.key});
+//
+//   @override
+//   _MainScreenState createState() => _MainScreenState();
+// }
+//
+// class _MainScreenState extends State<MainScreen> {
+//   int _selectedIndex = 0;
+//
+//   final List<Widget> _pages = [
+//     HomeScreen(),     // Learning Screen (make sure to create this screen)
+//     ProfileScreen(),    // Profile Screen (make sure to create this screen)
+//   ];
+//
+//   void _onItemTapped(int index) {
+//     setState(() {
+//       _selectedIndex = index;
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: _pages[_selectedIndex], // Display the selected page
+//       bottomNavigationBar: BottomNavigationBar(
+//         items: const <BottomNavigationBarItem>[
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.home),
+//             label: 'Home',
+//           ),
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.person),
+//             label: 'Profile',
+//           ),
+//         ],
+//         currentIndex: _selectedIndex,
+//         onTap: _onItemTapped,
+//         selectedItemColor: Theme.of(context).primaryColor,
+//         unselectedItemColor: Colors.grey,
+//       ),
+//     );
+//   }
+// }
