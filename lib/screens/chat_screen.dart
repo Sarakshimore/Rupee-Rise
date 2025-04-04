@@ -253,14 +253,14 @@ class _ChatScreenState extends State<ChatScreen> {
                             children: [
                               isUser
                                   ? Text(
-                                      message['text'],
-                                      style: const TextStyle(fontSize: 16, color: Colors.black),
-                                    )
+                                message['text'],
+                                style: const TextStyle(fontSize: 16, color: Colors.black),
+                              )
                                   : (message['richText'] as RichText?) ??
-                                      Text(
-                                        message['text'],
-                                        style: const TextStyle(fontSize: 16, color: Colors.black),
-                                      ),
+                                  Text(
+                                    message['text'],
+                                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                                  ),
                               if (!isUser && message['interrupted'] == true)
                                 const Padding(
                                   padding: EdgeInsets.only(top: 8.0),
