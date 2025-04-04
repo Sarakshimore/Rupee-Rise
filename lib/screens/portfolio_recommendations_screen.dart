@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//Portfolio Recommendation screen
 class PortfolioRecommendationsScreen extends StatefulWidget {
   @override
   _PortfolioRecommendationsScreenState createState() => _PortfolioRecommendationsScreenState();

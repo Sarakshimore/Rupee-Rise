@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//Goal-based investing screen
 class GoalInvestingScreen extends StatefulWidget {
   @override
   _GoalInvestingScreenState createState() => _GoalInvestingScreenState();

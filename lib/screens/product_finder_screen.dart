@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+//Product Finder screen
 class InvestmentProduct {
   final String name;
   final String category; // "Stocks", "Mutual Funds", or "ETFs"
