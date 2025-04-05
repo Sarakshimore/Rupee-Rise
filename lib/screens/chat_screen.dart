@@ -1,8 +1,10 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -14,17 +16,24 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, dynamic>> _messages = [];
-  static const String apiKey = 'AIzaSyB-GRQ2C-XykwZcXv3e1HuMjgnPZjhxzdI'; // Replace with a valid API key
+  static var apiKey = dotenv.env['GEMINI_API_KEY'];
   final String apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey';
   Map<String, dynamic>? _userProfile;
   bool _isGenerating = false;
   bool _shouldStop = false;
 
+  final FlutterTts _flutterTts = FlutterTts();
+  List<String> _speechChunks = [];
+  int _currentChunkIndex = 0;
+  bool _isSpeaking = false;
+  bool _isPaused = false;
+  String _lastResponse = "";
+
   @override
   void initState() {
     super.initState();
     _loadUserProfile();
-    _addWelcomeMessage(); // Add the welcome message with "Namaste"
+    _addWelcomeMessage();
   }
 
   Future<void> _loadUserProfile() async {
@@ -54,7 +63,7 @@ class _ChatScreenState extends State<ChatScreen> {
     String basePrompt = "You are a financial assistant for beginners in India and your name is Rupee Guru. "
         "Answer the following question in simple terms, avoiding complex jargon. "
         "Do not say 'Namaste' in your response, as you have already greeted the user. "
-        "Don't always say hi there in your responses when something is asked"
+        "Don't always say hi there in your responses when something is asked. "
         "Use **text** to indicate bold text in your response: $userMessage";
 
     if (_userProfile != null) {
@@ -132,19 +141,14 @@ class _ChatScreenState extends State<ChatScreen> {
           }),
         );
 
-        print('API Response Status: ${response.statusCode}');
-        print('API Response Body: ${response.body}');
-
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
           String aiResponse = data['candidates'][0]['content']['parts'][0]['text'] ?? 'No response text';
-          print('AI Response: $aiResponse');
           await _typeMessage(aiResponse);
         } else {
           await _typeMessage('Error: Unable to get response (Status: ${response.statusCode})');
         }
       } catch (e) {
-        print('Error: $e');
         await _typeMessage('Error: Something went wrong - $e');
       }
 
@@ -188,22 +192,66 @@ class _ChatScreenState extends State<ChatScreen> {
         _isGenerating = false;
       });
     }
+
+    _lastResponse = message;
+    _speechChunks = _splitIntoChunks(_lastResponse);
+    _currentChunkIndex = 0;
+    _isPaused = false;
+  }
+
+  List<String> _splitIntoChunks(String text) {
+    return text.split(RegExp(r'(?<=[.?!])\s+')).where((e) => e.trim().isNotEmpty).toList();
+  }
+
+  Future<void> _speakResponse() async {
+    if (_speechChunks.isEmpty || _currentChunkIndex >= _speechChunks.length) return;
+
+    _isSpeaking = true;
+    _isPaused = false;
+
+    // Set language to English (India)
+    await _flutterTts.setLanguage("en-IN");
+
+    _flutterTts.setCompletionHandler(() {
+      if (_isPaused) return;
+      _currentChunkIndex++;
+      if (_currentChunkIndex < _speechChunks.length) {
+        _flutterTts.speak(_speechChunks[_currentChunkIndex]);
+      } else {
+        _isSpeaking = false;
+        setState(() {});
+      }
+    });
+
+    _flutterTts.setStartHandler(() {
+      setState(() {
+        _isSpeaking = true;
+      });
+    });
+
+    _flutterTts.setCancelHandler(() {
+      _isSpeaking = false;
+    });
+
+    await _flutterTts.speak(_speechChunks[_currentChunkIndex]);
+  }
+
+  Future<void> _pauseSpeech() async {
+    await _flutterTts.stop();
+    _isPaused = true;
+    _isSpeaking = false;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Chat with Rupee Guru",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: const Text("Chat with Rupee Guru", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF4CAF50),
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20),
-          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
         elevation: 4,
       ),
@@ -217,6 +265,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemBuilder: (context, index) {
                   final message = _messages[index];
                   final isUser = message['sender'] == 'user';
+                  final isLastAI = !isUser && index == _messages.length - 1;
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                     child: Column(
@@ -224,53 +274,39 @@ class _ChatScreenState extends State<ChatScreen> {
                       children: [
                         Text(
                           isUser ? 'You' : 'Rupee Guru',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.bold),
                         ),
                         Container(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.75,
-                          ),
+                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
                           margin: const EdgeInsets.only(top: 2),
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: isUser ? Colors.blue[100] : Colors.white,
                             borderRadius: BorderRadius.circular(15),
                             boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                spreadRadius: 1,
-                                blurRadius: 3,
-                                offset: const Offset(0, 2),
-                              ),
+                              BoxShadow(color: Colors.grey.withOpacity(0.2), spreadRadius: 1, blurRadius: 3, offset: const Offset(0, 2)),
                             ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               isUser
-                                  ? Text(
-                                message['text'],
-                                style: const TextStyle(fontSize: 16, color: Colors.black),
-                              )
-                                  : (message['richText'] as RichText?) ??
-                                  Text(
-                                    message['text'],
-                                    style: const TextStyle(fontSize: 16, color: Colors.black),
-                                  ),
+                                  ? Text(message['text'], style: const TextStyle(fontSize: 16, color: Colors.black))
+                                  : (message['richText'] as RichText?) ?? Text(message['text'], style: const TextStyle(fontSize: 16, color: Colors.black)),
                               if (!isUser && message['interrupted'] == true)
                                 const Padding(
                                   padding: EdgeInsets.only(top: 8.0),
                                   child: Text(
                                     'Response interrupted',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                      fontStyle: FontStyle.italic,
-                                    ),
+                                    style: TextStyle(fontSize: 12, color: Colors.grey, fontStyle: FontStyle.italic),
+                                  ),
+                                ),
+                              if (isLastAI && !_isGenerating)
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: IconButton(
+                                    icon: Icon(_isSpeaking ? Icons.pause : Icons.play_arrow),
+                                    onPressed: _isSpeaking ? _pauseSpeech : _speakResponse,
                                   ),
                                 ),
                             ],
@@ -292,9 +328,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       decoration: InputDecoration(
                         hintText: "Type your question...",
                         hintStyle: const TextStyle(fontWeight: FontWeight.normal),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),

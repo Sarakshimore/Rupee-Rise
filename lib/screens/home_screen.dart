@@ -1,4 +1,3 @@
-import 'package:ai_fin_assist/screens/learning_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart'; // For launching video URLs
@@ -9,6 +8,8 @@ import 'chat_screen.dart';
 import 'portfolio_recommendations_screen.dart';
 import 'product_finder_screen.dart';
 import 'profile_screen.dart';
+import 'learning_screen.dart';
+import 'realtime_index_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -87,8 +88,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(builder: (_) => const ProfileScreen()),
               ),
+            ),
+            ListTile(
+              leading: Icon(Icons.show_chart_outlined, color: Colors.green),
+              title: Text(
+                'Market Indexes',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => RealTimeIndexScreen()),
+              ),
             )
-
           ],
         ),
       ),
@@ -174,30 +185,32 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildFeatureCard(
                   context: context,
                   icon: Icons.currency_rupee_outlined,
-                  title: 'Portfolio Recommendations',
+                  title: 'Portfolio Suggestion',
                   description: 'Personalized suggestions based on risk profile and goals',
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => PortfolioRecommendationsScreen()),
                   ),
                 ),
+
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
-                  icon: Icons.show_chart_outlined,
+                  icon: Icons.insert_chart_outlined,
                   title: 'Explore Investments',
-                  description: 'Get product recommendations',
+                  description: 'Get investment recommendations',
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => ProductFinderScreen()),
                   ),
                 ),
+
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
                   icon: Icons.savings_outlined,
                   title: 'Goal-Based Investing',
-                  description: 'Get a monthly SIP recommendation',
+                  description: 'Get an advice on monthly SIP',
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => GoalInvestingScreen()),
@@ -210,9 +223,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
-
 
   Widget _buildFeatureCard({
     required BuildContext context,
@@ -276,187 +286,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildVideoTile({
-    required BuildContext context,
-    required String title,
-    required String duration,
-    required String url,
-  }) {
-    return GestureDetector(
-      onTap: () async {
-        final Uri videoUrl = Uri.parse(url);
-        if (await canLaunchUrl(videoUrl)) {
-          await launchUrl(videoUrl, mode: LaunchMode.externalApplication);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Could not launch $url')),
-          );
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: 100,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                const Icon(
-                  Icons.play_circle_filled,
-                  color: Color(0xFF4CAF50),
-                  size: 30,
-                ),
-              ],
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      color: const Color(0xFF4CAF50),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    'Duration: $duration',
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey[600],
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    'Auto-generated caption: Learn to save effectively...',
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey[500],
-                      fontSize: 10,
-                      fontStyle: FontStyle.italic,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfographicCard({
-    required BuildContext context,
-    required String title,
-    required Color diagramColor,
-    required String explanation,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(
-              title,
-              style: GoogleFonts.poppins(
-                color: const Color(0xFF4CAF50),
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            content: Text(
-              explanation,
-              style: GoogleFonts.poppins(
-                color: Colors.black87,
-                fontSize: 14,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Close',
-                  style: GoogleFonts.poppins(
-                    color: const Color(0xFF4CAF50),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: GoogleFonts.poppins(
-                color: const Color(0xFF4CAF50),
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              height: 100,
-              decoration: BoxDecoration(
-                color: diagramColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text(
-                  'Diagram Placeholder',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

@@ -121,8 +121,18 @@ class _PortfolioRecommendationsScreenState extends State<PortfolioRecommendation
       // Display the risk assessment quiz.
       return Scaffold(
         appBar: AppBar(
-          title: Text("Risk Assessment Quiz"),
-          backgroundColor: Colors.green,
+          title: const Text(
+            "Portfolio Suggestion",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: const Color(0xFF4CAF50),
+          foregroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
+            ),
+          ),
+          elevation: 4,
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16),
@@ -168,66 +178,9 @@ class _PortfolioRecommendationsScreenState extends State<PortfolioRecommendation
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: completeQuiz,
-                  child: Text("Submit Quiz"),
+                  child: Text("Submit Quiz", style: TextStyle(color: Colors.white)),
                 ),
               ),
-            ],
-          ),
-        ),
-      );
-    } else {
-      // After the quiz: show risk profile, input for budget, and recommendation.
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Portfolio Recommendations"),
-          backgroundColor: Colors.green,
-        ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Your risk profile is: $riskProfile",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 16),
-              Text("Enter your monthly budget (₹):", style: TextStyle(fontSize: 18)),
-              TextField(
-                controller: budgetController,
-                keyboardType: TextInputType.number,
-                decoration:
-                InputDecoration(hintText: "e.g., 10000", border: OutlineInputBorder()),
-              ),
-              SizedBox(height: 16),
-              Center(
-                child: ElevatedButton(
-                  style:
-                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                  onPressed:
-                  generateRecommendation,
-                  child:
-                  Text("Get Recommendation"),
-                ),
-              ),
-              SizedBox(height:
-              16),
-              if (recommendation.isNotEmpty)
-                Container(
-                  padding:
-                  EdgeInsets.all(16),
-                  decoration:
-                  BoxDecoration(
-                    color:
-                    Colors.grey[200],
-                    borderRadius:
-                    BorderRadius.circular(12),
-                  ),
-                  child:
-                  Text(recommendation,
-                      style:
-                      TextStyle(fontSize:
-                      16, fontWeight:
-                      FontWeight.bold)),
-                ),
             ],
           ),
         ),
@@ -244,6 +197,68 @@ class _PortfolioRecommendationsScreenState extends State<PortfolioRecommendation
           child:
           const Icon(Icons.chat, color:
           Colors.white),
+        )
+      );
+    } else {
+      // After the quiz: show risk profile, input for budget, and recommendation.
+      return WillPopScope(
+        onWillPop: () async {
+          setState(() {
+            quizCompleted = false; // Go back to quiz instead of popping screen
+          });
+          return false; // prevent default pop
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Portfolio Suggestion", style: TextStyle(fontWeight: FontWeight.bold)),
+            backgroundColor: const Color(0xFF4CAF50),
+            foregroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            ),
+            elevation: 4,
+          ),
+          body: SingleChildScrollView(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Your risk profile is: $riskProfile", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 16),
+                Text("Enter your monthly budget (₹):", style: TextStyle(fontSize: 18)),
+                TextField(
+                  controller: budgetController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(hintText: "e.g., 10000", border: OutlineInputBorder()),
+                ),
+                SizedBox(height: 16),
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    onPressed: generateRecommendation,
+                    child: Text("Get Recommendation", style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                SizedBox(height: 16),
+                if (recommendation.isNotEmpty)
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(recommendation, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: const Color(0xFF4CAF50),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatScreen()));
+            },
+            child: const Icon(Icons.chat, color: Colors.white),
+          ),
         ),
       );
     }

@@ -2,74 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'chat_screen.dart';
+
 class LearningScreen extends StatelessWidget {
   const LearningScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF4CAF50), Color(0xFF4CAF50)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+        title: const Text(
+          "Start Learning",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFF4CAF50),
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
           ),
         ),
-
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
-          onPressed: () => Navigator.pop(context),
-        ),
+        elevation: 4,
       ),
       body: Column(
         children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.2,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF4CAF50), Color(0xFF4CAF50)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Learning',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withOpacity(0.3),
-                        offset: const Offset(0, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Master money basics with ease',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: 18,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ],
-            ),
-          ),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
@@ -147,7 +103,7 @@ class LearningScreen extends StatelessWidget {
                   Text(
                     'Infographics',
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFF388E3C),
+                      color: const Color(0xFF040404),
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
@@ -172,6 +128,18 @@ class LearningScreen extends StatelessWidget {
           ),
         ],
       ),
+        // Floating Action Button for Chat Screen
+        floatingActionButton:
+        FloatingActionButton(backgroundColor:
+        const Color(0xFF4CAF50), onPressed:
+            () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ChatScreen()),
+          );
+
+        }, child:
+        const Icon(Icons.chat,color:Colors.white))
     );
   }
 

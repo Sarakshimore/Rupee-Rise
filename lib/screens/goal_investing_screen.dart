@@ -58,8 +58,17 @@ class _GoalInvestingScreenState extends State<GoalInvestingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Goal-Based Investing'),
-          backgroundColor: Colors.green,
+          title: const Text(
+            "Goal-Based Investing",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: const Color(0xFF4CAF50),
+          foregroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
+            ),
+          ),
           elevation: 4,
         ),
         body: Padding(
@@ -71,11 +80,11 @@ class _GoalInvestingScreenState extends State<GoalInvestingScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title Section
-                  Text(
+                  /*Text(
                     'Plan Your Investment Goals',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 16),*/
 
                   // Goal Input Field
                   buildCard(
@@ -176,24 +185,17 @@ class _GoalInvestingScreenState extends State<GoalInvestingScreen> {
                     ),
                   ),
 
-                  SizedBox(height:
-                  24),
+                  SizedBox(height: 24),
 
                   // Recommendation Button
-                  Center(child:
-                  ElevatedButton(style:
-                  ElevatedButton.styleFrom(backgroundColor:
-                  Colors.green, padding:
-                  EdgeInsets.symmetric(horizontal:
-                  24, vertical:
-                  12), textStyle:
-                  TextStyle(fontSize:
-                  18)), onPressed:
-                  calculateRecommendation, child:
-                  Text('Get Recommendation'))),
-
-                  SizedBox(height:
-                  24),
+                  Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      onPressed: calculateRecommendation,
+                      child: Text("Get Recommendation", style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                  SizedBox(height: 16),
 
                   // Recommendation Display
                   if (recommendation.isNotEmpty)

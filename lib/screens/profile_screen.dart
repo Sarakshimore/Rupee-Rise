@@ -35,11 +35,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             'risk_preference': _riskPreference,
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profile saved successfully!')),
+            const SnackBar(
+                content: Text('Profile saved successfully!'),
+                backgroundColor: Color(0xFF4CAF50)
+            ),
           );
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error saving profile: $e')),
+            SnackBar(
+                content: Text('Error saving profile: $e'),
+                backgroundColor: Color(0xFF4CAF50)
+            ),
           );
         }
       }
@@ -55,7 +61,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error signing out: $e')),
+        SnackBar(
+          content: Text('Error signing out: $e'),
+          backgroundColor: Color(0xFF4CAF50)
+        ),
       );
     }
   }

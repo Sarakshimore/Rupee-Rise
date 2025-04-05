@@ -24,7 +24,10 @@ class _LoginScreenState extends State<LoginScreen> {
           context, MaterialPageRoute(builder: (_) => HomeScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login Failed")));
+          const SnackBar(
+              content: Text("Login Failed"),
+              backgroundColor: Color(0xFF4CAF50)
+          ));
     }
   }
 
