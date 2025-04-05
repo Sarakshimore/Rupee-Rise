@@ -1,5 +1,8 @@
+import 'package:ai_fin_assist/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:google_fonts/google_fonts.dart';
 
 //Product Finder screen
 class InvestmentProduct {
@@ -181,19 +184,59 @@ class _ProductFinderScreenState extends State<ProductFinderScreen> {
     }).toList();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Investment Screener'),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF4CAF50), Color(0xFF4CAF50)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        title: Text(
+          'Investment Screener',
+
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFF4CAF50)))
           : Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Asset Type Filter
-            buildFilterSection('Asset Type', categories, selectedCategories,
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFF1F8E9), Color(0xFFE8F5E9)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    spreadRadius: 3,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+                border: Border.all(color: const Color(0xFF4CAF50).withOpacity(0.2)),
+              ),
+              child: buildFilterSection(
+                'Asset Type',
+                categories,
+                selectedCategories,
                     (option, isSelected) {
                   setState(() {
                     if (isSelected) {
@@ -202,15 +245,72 @@ class _ProductFinderScreenState extends State<ProductFinderScreen> {
                       selectedCategories.remove(option);
                     }
                   });
-                }),
-            SizedBox(height: 16),
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
             // Timeframe Toggle
-            Text('Select Timeframe', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            buildTimeframeToggle(),
-            SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFF1F8E9), Color(0xFFE8F5E9)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    spreadRadius: 3,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+                border: Border.all(color: const Color(0xFF4CAF50).withOpacity(0.2)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Select Timeframe',
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF388E3C),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  buildTimeframeToggle(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             // Return Range Filter
-            buildFilterSection('Return Range ($selectedTimeframe)', returnRanges,
-                selectedReturnRanges, (option, isSelected) {
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFF1F8E9), Color(0xFFE8F5E9)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    spreadRadius: 3,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+                border: Border.all(color: const Color(0xFF4CAF50).withOpacity(0.2)),
+              ),
+              child: buildFilterSection(
+                'Return Range ($selectedTimeframe)',
+                returnRanges,
+                selectedReturnRanges,
+                    (option, isSelected) {
                   setState(() {
                     if (isSelected) {
                       selectedReturnRanges.add(option);
@@ -218,19 +318,40 @@ class _ProductFinderScreenState extends State<ProductFinderScreen> {
                       selectedReturnRanges.remove(option);
                     }
                   });
-                }),
-            SizedBox(height: 16),
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
             // Display Filtered Products
             Expanded(
               child: filteredProducts.isEmpty
-                  ? Center(child: Text('No products match the filters.'))
+                  ? Center(
+                child: Text(
+                  'No products match the filters.',
+                  style: GoogleFonts.poppins(
+                    color: Colors.grey[600],
+                    fontSize: 16,
+                  ),
+                ),
+              )
                   : ListView.builder(
                 itemCount: filteredProducts.length,
-                itemBuilder: (context, index) => buildProductCard(filteredProducts[index]),
+                itemBuilder: (context, index) =>
+                    buildProductCard(filteredProducts[index]),
               ),
-            )
+            ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF4CAF50),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ChatScreen()),
+          );
+        },
+        child: const Icon(Icons.chat, color: Colors.white),
       ),
     );
   }

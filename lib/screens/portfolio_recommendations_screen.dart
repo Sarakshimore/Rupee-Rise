@@ -1,3 +1,4 @@
+import 'package:ai_fin_assist/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 //Portfolio Recommendation screen
@@ -129,29 +130,40 @@ class _PortfolioRecommendationsScreenState extends State<PortfolioRecommendation
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ...List.generate(questions.length, (index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      questions[index].text,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                return Card(
+                  elevation: 4,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          questions[index].text,
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 8),
+                        ...List.generate(questions[index].options.length, (optionIndex) {
+                          return RadioListTile<int>(
+                            title: Text(questions[index].options[optionIndex].text),
+                            value: questions[index].options[optionIndex].score,
+                            groupValue: selectedAnswers[index],
+                            onChanged: (value) {
+                              setState(() {
+                                selectedAnswers[index] = value;
+                              });
+                            },
+                          );
+                        }),
+                      ],
                     ),
-                    ...List.generate(questions[index].options.length, (optionIndex) {
-                      return RadioListTile<int>(
-                        title: Text(questions[index].options[optionIndex].text),
-                        value: questions[index].options[optionIndex].score,
-                        groupValue: selectedAnswers[index],
-                        onChanged: (value) {
-                          setState(() {
-                            selectedAnswers[index] = value;
-                          });
-                        },
-                      );
-                    }),
-                    SizedBox(height: 16),
-                  ],
+                  ),
                 );
               }),
+              SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
@@ -182,28 +194,61 @@ class _PortfolioRecommendationsScreenState extends State<PortfolioRecommendation
               TextField(
                 controller: budgetController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(hintText: "e.g., 10000"),
+                decoration:
+                InputDecoration(hintText: "e.g., 10000", border: OutlineInputBorder()),
               ),
               SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                  onPressed: generateRecommendation,
-                  child: Text("Get Recommendation"),
+                  style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  onPressed:
+                  generateRecommendation,
+                  child:
+                  Text("Get Recommendation"),
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height:
+              16),
               if (recommendation.isNotEmpty)
-                Text(
-                  recommendation,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                Container(
+                  padding:
+                  EdgeInsets.all(16),
+                  decoration:
+                  BoxDecoration(
+                    color:
+                    Colors.grey[200],
+                    borderRadius:
+                    BorderRadius.circular(12),
+                  ),
+                  child:
+                  Text(recommendation,
+                      style:
+                      TextStyle(fontSize:
+                      16, fontWeight:
+                      FontWeight.bold)),
                 ),
             ],
           ),
         ),
+        floatingActionButton:
+        FloatingActionButton(
+          backgroundColor:
+          const Color(0xFF4CAF50),
+          onPressed:
+              () {
+            Navigator.push(context, MaterialPageRoute(builder:
+                (_) =>
+            const ChatScreen()));
+          },
+          child:
+          const Icon(Icons.chat, color:
+          Colors.white),
+        ),
       );
     }
   }
+
 }
 
 class Question {

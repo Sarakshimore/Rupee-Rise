@@ -1,3 +1,4 @@
+import 'package:ai_fin_assist/screens/learning_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart'; // For launching video URLs
@@ -77,38 +78,25 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.logout, color: Color(0xFF4CAF50)),
+              leading: Icon(Icons.person_outline, color: Colors.green),
               title: Text(
-                'Logout',
-                style: GoogleFonts.poppins(
-                  color: Colors.black87,
-                  fontSize: 16,
-                ),
+                'Your Profile',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
-              onTap: () async {
-                await _authService.signOut();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                );
-              },
-            ),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              ),
+            )
+
           ],
         ),
       ),
 
-      body: _showLearning ? _buildLearningContent(context) : _buildHomeContent(context),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF4CAF50),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const ChatScreen()),
-          );
-        },
-        child: const Icon(Icons.chat, color: Colors.white),
-      ),
+      body: _showLearning ? LoginScreen() : _buildHomeContent(context),
+
+
     );
   }
 
@@ -148,28 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _showLearning = true; // Switch to learning content
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: Text(
-                    'Start Learning',
-                    style: GoogleFonts.poppins(
-                      color: const Color(0xFF4CAF50),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+
               ],
             ),
           ),
@@ -178,14 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Get Started',
-                  style: GoogleFonts.poppins(
-                    color: Colors.black87,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+
                 const SizedBox(height: 20),
                 _buildFeatureCard(
                   context: context,
@@ -197,17 +157,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (_) => const ChatScreen()),
                   ),
                 ),
+
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
-                  icon: Icons.person_outline,
-                  title: 'Your Profile',
-                  description: 'View and update your information',
+                  icon: Icons.school_outlined, // Education/learning icon
+                  title: 'Start Learning',
+                  description: 'Access educational content and resources',
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                    MaterialPageRoute(builder: (_) => LearningScreen()),
                   ),
                 ),
+
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
@@ -249,136 +211,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Learning Content (similar to a LearningScreen)
-  Widget _buildLearningContent(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height * 0.2,
-          width: double.infinity,
-          color: const Color(0xFF4CAF50),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Learning',
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Master money basics with ease',
-                style: GoogleFonts.poppins(
-                  color: Colors.grey[300],
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Videos',
-                      style: GoogleFonts.poppins(
-                        color: Colors.black87,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    OutlinedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('More videos coming soon!')),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFF4CAF50)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      ),
-                      child: Text(
-                        'More',
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFF4CAF50),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 200,
-                  child: ListView(
-                    children: [
-                      _buildVideoTile(
-                        context: context,
-                        title: 'Saving 101',
-                        duration: '2:30',
-                        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                      ),
-                      const SizedBox(height: 10),
-                      _buildVideoTile(
-                        context: context,
-                        title: 'How to Start Investing',
-                        duration: '3:00',
-                        url: 'https://www.youtube.com/watch?v=example2',
-                      ),
-                      const SizedBox(height: 10),
-                      _buildVideoTile(
-                        context: context,
-                        title: 'Budgeting Made Simple',
-                        duration: '1:45',
-                        url: 'https://www.youtube.com/watch?v=example3',
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Infographics',
-                  style: GoogleFonts.poppins(
-                    color: Colors.black87,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                _buildInfographicCard(
-                  context: context,
-                  title: 'Risk Management',
-                  diagramColor: const Color(0xFF4CAF50),
-                  explanation: 'Diversification reduces risk by spreading investments across different assets.',
-                ),
-                const SizedBox(height: 10),
-                _buildInfographicCard(
-                  context: context,
-                  title: 'Asset Allocation',
-                  diagramColor: const Color(0xFF4CAF50),
-                  explanation: 'Allocate assets based on your goals and risk tolerance.',
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+
+
 
   Widget _buildFeatureCard({
     required BuildContext context,
