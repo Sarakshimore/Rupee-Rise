@@ -1,18 +1,59 @@
 
+# 💸 Rupee Rise — GenAI-Powered Financial Assistant
+
+**Rupee Rise** is a GenAI-based financial assistant designed to democratize access to investing knowledge and decision-making tools in India. With financial literacy levels still low and millions of new investors entering the market, Rupee Rise empowers users with AI-driven conversations to understand investing, discover suitable financial products, and ultimately make better-informed decisions — all at scale.
+
 ---
 
-### How to Use This README:
+## 🚀 Objective
 
-1. **Create a `README.md` File**:
-   - In your project’s root directory, create a file named `README.md`.
-   - Copy and paste the above Markdown code into the file.
+India is witnessing a surge in retail investors, but there's a massive gap in financial literacy and guidance. Human-driven advisory doesn't scale to the hundreds of millions who need it.
 
-2. **Customize the README**:
-   - **Repository URL**: Replace `https://github.com/your-username/genai-financial-assistant.git` with your actual repository URL.
-   - **Screenshots**: Capture screenshots of your app (e.g., welcome screen, chat interface) and place them in a `screenshots/` folder in your project. Update the paths in the "Screenshots" section (e.g., `screenshots/welcome_screen.png`).
-   - **Contact Info**: Update the email and GitHub username in the "Contact" section.
-   - **License**: If you’re using a different license, update the "License" section and badge accordingly.
-   - **Badges**: The badges show versions for Flutter, Firebase, and Gemini API. Update the versions if they differ in your project (e.g., `Flutter-3.16.0`).
+Rupee Rise aims to:
 
-3. **Add a License File**:
-   - If you’re using the MIT License, create a `LICENSE` file in your project root with the MIT License text:
+- Provide **conversational financial guidance** using GenAI
+- Help users discover and understand **investment products**
+- Support **first-time investors** with no prior financial knowledge
+- Scale to millions of users using AI-driven support, not manual advisors
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology        | Purpose                                |
+|------------------|----------------------------------------|
+| **Flutter**       | Cross-platform mobile UI development   |
+| **Firebase Auth** | User authentication                    |
+| **Firestore DB**  | Real-time cloud database               |
+| **Gemini API**    | GenAI-powered conversation engine      |
+| **Vertex AI**     | Backend LLM orchestration & deployment |
+| **Project IDX**   | AI-assisted development environment    |
+
+---
+
+## 📱 Features
+
+- 🔐 **Secure Login** with email/password or Google
+- 🤖 **Rupee Guru - AI Chat Assistant** to ask financial questions easily
+- 💡 **Investment Recommendations** based on user queries and preferences
+- 📊 **Personalized Guidance** through LLM and Gemini API
+- ☁️ **Realtime Sync** of user data via Firestore
+
+---
+
+## 🧪 Installation
+
+### Prerequisites
+
+- Flutter SDK
+- Firebase project with Auth and Firestore enabled
+- Google Cloud project with Vertex AI + Gemini API enabled
+- `google-services.json` in `/android/app/`
+
+### Setup
+
+```bash
+git clone https://github.com/Sarakshimore/Rupee-Rise.git
+cd rupee-rise
+flutter pub get
+flutter run
