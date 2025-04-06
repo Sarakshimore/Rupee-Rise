@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (user != null) {
       final snapshot = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
       setState(() {
-        userName = snapshot.data()?['name'] ?? 'Friend';
+        userName = snapshot.data()?['name'] ?? 'Friend'; // stores the user's name
       });
     }
   }
