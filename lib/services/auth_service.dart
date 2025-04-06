@@ -37,20 +37,31 @@ class AuthService {
   Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+
+      if (googleUser == null) {
+        print("Google Sign-In aborted by user.");
+        return null; // User cancelled
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      UserCredential userCredential = await _auth.signInWithCredential(credential);
-      return userCredential.user; // ✅ No more error
+      final UserCredential userCredential =
+      await _auth.signInWithCredential(credential);
+
+      print("Google Sign-In successful: ${userCredential.user?.email}");
+      return userCredential.user;
+
     } catch (e) {
       print("Google Sign-In Error: $e");
       return null;
     }
   }
+
 
   // Logout
   Future<void> signOut() async {
