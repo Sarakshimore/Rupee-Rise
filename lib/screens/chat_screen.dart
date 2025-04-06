@@ -209,7 +209,6 @@ class _ChatScreenState extends State<ChatScreen> {
     _isSpeaking = true;
     _isPaused = false;
 
-    // Set language to English (India)
     await _flutterTts.setLanguage("en-IN");
 
     _flutterTts.setCompletionHandler(() {
@@ -243,6 +242,42 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {});
   }
 
+  Widget _buildLoader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 3,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _DotAnimation(delay: 0),
+                const SizedBox(width: 8),
+                _DotAnimation(delay: 200),
+                const SizedBox(width: 8),
+                _DotAnimation(delay: 400),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -261,8 +296,11 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: _messages.length,
+                itemCount: _messages.length + (_isGenerating ? 1 : 0),
                 itemBuilder: (context, index) {
+                  if (_isGenerating && index == _messages.length) {
+                    return _buildLoader();
+                  }
                   final message = _messages[index];
                   final isUser = message['sender'] == 'user';
                   final isLastAI = !isUser && index == _messages.length - 1;
@@ -353,6 +391,63 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DotAnimation extends StatefulWidget {
+  final int delay;
+
+  const _DotAnimation({required this.delay});
+
+  @override
+  __DotAnimationState createState() => __DotAnimationState();
+}
+
+class __DotAnimationState extends State<_DotAnimation> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 0, end: 10).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    Future.delayed(Duration(milliseconds: widget.delay), () {
+      if (mounted) {
+        _controller.repeat(reverse: true);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, -_animation.value),
+          child: Container(
+            width: 8,
+            height: 8,
+            decoration: const BoxDecoration(
+              color: Color(0xFF4CAF50),
+              shape: BoxShape.circle,
+            ),
+          ),
+        );
+      },
     );
   }
 }
