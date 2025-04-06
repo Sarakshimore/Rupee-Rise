@@ -78,23 +78,16 @@ class LearningScreen extends StatelessWidget {
                       children: [
                         _buildVideoTile(
                           context: context,
-                          title: 'Saving 101',
-                          duration: '2:30',
-                          url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                          title: 'How does the stock market work?',
+                          duration: '4:29',
+                          url: 'https://www.youtube.com/watch?v=p7HKvqRI_Bo',
                         ),
                         const SizedBox(height: 15),
                         _buildVideoTile(
                           context: context,
-                          title: 'How to Start Investing',
-                          duration: '3:00',
-                          url: 'https://www.youtube.com/watch?v=example2',
-                        ),
-                        const SizedBox(height: 15),
-                        _buildVideoTile(
-                          context: context,
-                          title: 'Budgeting Made Simple',
-                          duration: '1:45',
-                          url: 'https://www.youtube.com/watch?v=example3',
+                          title: 'How to Invest for Beginners (2025)',
+                          duration: '20:15',
+                          url: 'https://www.youtube.com/watch?v=lNdOtlpmH5U',
                         ),
                       ],
                     ),
@@ -128,18 +121,16 @@ class LearningScreen extends StatelessWidget {
           ),
         ],
       ),
-        // Floating Action Button for Chat Screen
-        floatingActionButton:
-        FloatingActionButton(backgroundColor:
-        const Color(0xFF4CAF50), onPressed:
-            () {
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF4CAF50),
+        onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ChatScreen()),
           );
-
-        }, child:
-        const Icon(Icons.chat,color:Colors.white))
+        },
+        child: const Icon(Icons.chat, color: Colors.white),
+      ),
     );
   }
 
@@ -152,13 +143,15 @@ class LearningScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         final Uri videoUrl = Uri.parse(url);
-        if (await canLaunchUrl(videoUrl)) {
-          await launchUrl(videoUrl, mode: LaunchMode.externalApplication);
-        } else {
+        try {
+          if (!await launchUrl(videoUrl, mode: LaunchMode.externalApplication)) {
+            throw 'Could not launch $url';
+          }
+        } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Could not launch video URL'),
-              backgroundColor: Color(0xFF4CAF50),
+            SnackBar(
+              content: Text('Error launching video: $e'),
+              backgroundColor: const Color(0xFF4CAF50),
             ),
           );
         }
