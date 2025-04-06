@@ -21,6 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Map<String, dynamic>? _userProfile;
   bool _isGenerating = false;
   bool _shouldStop = false;
+  bool _isLoading = false; // New flag to track loader state
 
   final FlutterTts _flutterTts = FlutterTts();
   List<String> _speechChunks = [];
@@ -78,7 +79,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   RichText _parseMarkdownToRichText(String text) {
     if (text.isEmpty) {
-      return RichText(text: TextSpan(text: ''));
+      return RichText(text: const TextSpan(text: ''));
     }
 
     List<TextSpan> spans = [];
@@ -123,7 +124,7 @@ class _ChatScreenState extends State<ChatScreen> {
         _messages.add({'sender': 'user', 'text': userMessage});
         _messageController.clear();
         _isGenerating = true;
-        _shouldStop = false;
+        _isLoading = true; // Show loader
       });
 
       try {
@@ -164,6 +165,7 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       _shouldStop = true;
       _isGenerating = false;
+      _isLoading = false; // Hide loader if stopped
       if (_messages.isNotEmpty && _messages.last['sender'] == 'ai') {
         _messages.last['interrupted'] = true;
       }
@@ -171,11 +173,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _typeMessage(String message) async {
-    String typedText = '';
     setState(() {
-      _messages.add({'sender': 'ai', 'text': typedText, 'richText': _parseMarkdownToRichText(''), 'interrupted': false});
+      _isLoading = false; // Hide loader when response starts typing
+      _messages.add({'sender': 'ai', 'text': '', 'richText': _parseMarkdownToRichText(''), 'interrupted': false});
     });
 
+    String typedText = '';
     for (int i = 0; i < message.length && !_shouldStop; i++) {
       await Future.delayed(const Duration(milliseconds: 10));
       if (mounted) {
@@ -296,10 +299,10 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: _messages.length + (_isGenerating ? 1 : 0),
+                itemCount: _messages.length + (_isLoading ? 1 : 0), // Show loader only when loading
                 itemBuilder: (context, index) {
-                  if (_isGenerating && index == _messages.length) {
-                    return _buildLoader();
+                  if (_isLoading && index == _messages.length) {
+                    return _buildLoader(); // Loader appears alone
                   }
                   final message = _messages[index];
                   final isUser = message['sender'] == 'user';

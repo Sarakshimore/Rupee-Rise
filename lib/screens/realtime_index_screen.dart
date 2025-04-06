@@ -2,17 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:fl_chart/fl_chart.dart';
 import 'chat_screen.dart';
 
 class RealTimeIndexScreen extends StatefulWidget {
+  const RealTimeIndexScreen({super.key});
+
   @override
   _RealTimeIndexScreenState createState() => _RealTimeIndexScreenState();
 }
 
 class _RealTimeIndexScreenState extends State<RealTimeIndexScreen> {
   late Timer _timer;
-
   Map<String, dynamic> niftyData = {};
   Map<String, dynamic> sensexData = {};
 
@@ -20,7 +21,7 @@ class _RealTimeIndexScreenState extends State<RealTimeIndexScreen> {
   void initState() {
     super.initState();
     _fetchData();
-    _timer = Timer.periodic(Duration(seconds: 30), (_) => _fetchData());
+    _timer = Timer.periodic(const Duration(seconds: 30), (_) => _fetchData());
   }
 
   @override
@@ -31,10 +32,10 @@ class _RealTimeIndexScreenState extends State<RealTimeIndexScreen> {
 
   Future<void> _fetchData() async {
     try {
-      final niftyUrl =
-          "https://query1.finance.yahoo.com/v8/finance/chart/^NSEI?region=IN&lang=en-IN&includePrePost=false&interval=1d&range=1d";
-      final sensexUrl =
-          "https://query1.finance.yahoo.com/v8/finance/chart/%5EBSESN?region=IN&lang=en-IN&includePrePost=false&interval=1d&range=1d";
+      const niftyUrl =
+          "https://query1.finance.yahoo.com/v8/finance/chart/^NSEI?region=IN&lang=en-IN&includePrePost=false&interval=1m&range=1d";
+      const sensexUrl =
+          "https://query1.finance.yahoo.com/v8/finance/chart/%5EBSESN?region=IN&lang=en-IN&includePrePost=false&interval=1m&range=1d";
 
       final niftyRes = await http.get(Uri.parse(niftyUrl));
       final sensexRes = await http.get(Uri.parse(sensexUrl));
@@ -43,10 +44,12 @@ class _RealTimeIndexScreenState extends State<RealTimeIndexScreen> {
         final niftyJson = json.decode(niftyRes.body);
         final sensexJson = json.decode(sensexRes.body);
 
-        setState(() {
-          niftyData = _parseIndexData(niftyJson);
-          sensexData = _parseIndexData(sensexJson);
-        });
+        if (mounted) {
+          setState(() {
+            niftyData = _parseIndexData(niftyJson);
+            sensexData = _parseIndexData(sensexJson);
+          });
+        }
       } else {
         print("HTTP error: NIFTY ${niftyRes.statusCode}, SENSEX ${sensexRes.statusCode}");
       }
@@ -59,6 +62,7 @@ class _RealTimeIndexScreenState extends State<RealTimeIndexScreen> {
     final result = data['chart']['result'][0];
     final meta = result['meta'];
     final quote = result['indicators']['quote'][0];
+    final timestamps = result['timestamp'];
 
     double price = meta['regularMarketPrice']?.toDouble() ?? 0.0;
     double prevClose = meta['chartPreviousClose']?.toDouble() ?? 0.0;
@@ -74,6 +78,15 @@ class _RealTimeIndexScreenState extends State<RealTimeIndexScreen> {
         ? ((price - prevClose) / prevClose) * 100
         : 0.0;
 
+    List<FlSpot> chartData = [];
+    if (timestamps != null && quote['close'] != null) {
+      for (int i = 0; i < timestamps.length && i < quote['close'].length; i++) {
+        if (quote['close'][i] != null) {
+          chartData.add(FlSpot(i.toDouble(), quote['close'][i].toDouble()));
+        }
+      }
+    }
+
     return {
       'price': price,
       'open': open,
@@ -81,7 +94,8 @@ class _RealTimeIndexScreenState extends State<RealTimeIndexScreen> {
       'low': low,
       'close': close,
       'volume': volume,
-      'percentChange': percentChange
+      'percentChange': percentChange,
+      'chartData': chartData,
     };
   }
 
@@ -103,25 +117,23 @@ class _RealTimeIndexScreenState extends State<RealTimeIndexScreen> {
         elevation: 4,
       ),
       body: ListView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         children: [
           IndexTile(title: "NIFTY 50", data: niftyData),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           IndexTile(title: "BSE SENSEX", data: sensexData),
         ],
       ),
-      // Floating Action Button for Chat Screen
-      floatingActionButton:
-      FloatingActionButton(backgroundColor:
-      const Color(0xFF4CAF50), onPressed:
-          () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ChatScreen()),
-        );
-
-      }, child:
-      const Icon(Icons.chat,color:Colors.white))
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF4CAF50),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ChatScreen()),
+          );
+        },
+        child: const Icon(Icons.chat, color: Colors.white),
+      ),
     );
   }
 }
@@ -130,14 +142,14 @@ class IndexTile extends StatelessWidget {
   final String title;
   final Map<String, dynamic> data;
 
-  const IndexTile({required this.title, required this.data});
+  const IndexTile({required this.title, required this.data, super.key});
 
   @override
   Widget build(BuildContext context) {
     if (data.isEmpty) {
       return Card(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Center(child: Text("Loading $title...")),
         ),
       );
@@ -148,10 +160,10 @@ class IndexTile extends StatelessWidget {
     Color? changeColor;
 
     if (percent > 0) {
-      arrow = Icon(Icons.arrow_upward, color: Colors.green, size: 18);
+      arrow = const Icon(Icons.arrow_upward, color: Colors.green, size: 18);
       changeColor = Colors.green;
     } else if (percent < 0) {
-      arrow = Icon(Icons.arrow_downward, color: Colors.red, size: 18);
+      arrow = const Icon(Icons.arrow_downward, color: Colors.red, size: 18);
       changeColor = Colors.red;
     }
 
@@ -159,13 +171,36 @@ class IndexTile extends StatelessWidget {
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            Divider(),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const Divider(),
+            SizedBox(
+              height: 100, // Reduced height for a more concise graph
+              child: LineChart(
+                LineChartData(
+                  gridData: const FlGridData(show: false), // Remove grid lines
+                  titlesData: const FlTitlesData(show: false), // Remove all titles
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: data['chartData'] ?? [],
+                      isCurved: true,
+                      color: const Color(0xFF4CAF50),
+                      barWidth: 1, // Thinner line
+                      dotData: const FlDotData(show: false),
+                      belowBarData: BarAreaData(show: false), // Remove area below
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
             _buildRow("Price", data['price']),
             _buildRow("Open", data['open']),
             _buildRow("High", data['high']),
@@ -189,7 +224,7 @@ class IndexTile extends StatelessWidget {
         Row(
           children: [
             if (arrow != null) arrow,
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
             Text(
               isPercent
                   ? "${value.toStringAsFixed(2)}%"
@@ -199,7 +234,7 @@ class IndexTile extends StatelessWidget {
               style: TextStyle(color: color),
             ),
           ],
-        )
+        ),
       ],
     );
   }

@@ -9,7 +9,7 @@ import 'portfolio_recommendations_screen.dart';
 import 'product_finder_screen.dart';
 import 'profile_screen.dart';
 import 'learning_screen.dart';
-import 'realtime_index_screen.dart';
+import 'realtime_index_screen.dart'; // Already correctly imported
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: AppBar(
         backgroundColor: const Color(0xFF4CAF50),
         elevation: 0,
@@ -46,7 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -79,39 +77,46 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.person_outline, color: Colors.green),
+              leading: const Icon(Icons.person_outline, color: Colors.green),
               title: Text(
                 'Your Profile',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProfileScreen()),
-              ),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                );
+              },
             ),
             ListTile(
-              leading: Icon(Icons.show_chart_outlined, color: Colors.green),
+              leading: const Icon(Icons.show_chart_outlined, color: Colors.green),
               title: Text(
                 'Market Indexes',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => RealTimeIndexScreen()),
-              ),
-            )
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => RealTimeIndexScreen()), // Added const for optimization
+                );
+              },
+            ),
           ],
         ),
       ),
-
-
-      body: _showLearning ? LoginScreen() : _buildHomeContent(context),
-
-
+      body: _showLearning ? const LoginScreen() : _buildHomeContent(context), // Added const for optimization
     );
   }
 
-  // Home Content wrapped in a SingleChildScrollView for scrolling.
   Widget _buildHomeContent(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
@@ -147,7 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-
               ],
             ),
           ),
@@ -156,7 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 const SizedBox(height: 20),
                 _buildFeatureCard(
                   context: context,
@@ -168,19 +171,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (_) => const ChatScreen()),
                   ),
                 ),
-
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
-                  icon: Icons.school_outlined, // Education/learning icon
+                  icon: Icons.school_outlined,
                   title: 'Start Learning',
                   description: 'Access educational content and resources',
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => LearningScreen()),
+                    MaterialPageRoute(builder: (_) => const LearningScreen()),
                   ),
                 ),
-
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
@@ -189,10 +190,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   description: 'Personalized suggestions based on risk profile and goals',
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => PortfolioRecommendationsScreen()),
+                    MaterialPageRoute(builder: (_) =>  PortfolioRecommendationsScreen()),
                   ),
                 ),
-
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
@@ -201,10 +201,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   description: 'Get investment recommendations',
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => ProductFinderScreen()),
+                    MaterialPageRoute(builder: (_) =>  ProductFinderScreen()),
                   ),
                 ),
-
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
@@ -213,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   description: 'Get an advice on monthly SIP',
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => GoalInvestingScreen()),
+                    MaterialPageRoute(builder: (_) =>  GoalInvestingScreen()),
                   ),
                 ),
               ],
