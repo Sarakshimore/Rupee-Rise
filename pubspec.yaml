@@ -48,6 +48,7 @@ dependencies:
   flutter_tts: ^4.2.2  # For Text-to-Speech
   webview_flutter: ^4.10.0
   flutter_dotenv: ^5.2.1
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:
