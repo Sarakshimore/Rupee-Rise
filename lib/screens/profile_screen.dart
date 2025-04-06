@@ -62,8 +62,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error signing out: $e'),
-          backgroundColor: Color(0xFF4CAF50)
+            content: Text('Error signing out: $e'),
+            backgroundColor: Color(0xFF4CAF50)
         ),
       );
     }
@@ -72,45 +72,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Chat Preferences", style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF4CAF50),
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
+        elevation: 4,
+      ),
       body: Column(
         children: [
           // 30% Green Background with "My Profile" and Back Button
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3, // 30% of screen height
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xFF4CAF50), // Green color
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
-            ),
-            child: Stack(
-              children: [
-                // Back Button
-                Positioned(
-                  top: 40, // Adjusted for status bar padding
-                  left: 16,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
-                    onPressed: () => Navigator.of(context).pop(),
-                    tooltip: 'Back',
-                  ),
-                ),
-                // Title
-                const Center(
-                  child: Text(
-                    'Chat Preferences',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+
           // Remaining 70% with Form Content
           Expanded(
             child: Padding(

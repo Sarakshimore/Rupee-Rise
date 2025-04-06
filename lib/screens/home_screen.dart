@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart'; // For launching video URLs
+import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../services/auth_service.dart';
 import 'goal_investing_screen.dart';
 import 'login_screen.dart';
@@ -20,7 +23,24 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = AuthService();
-  bool _showLearning = false; // Toggle for showing learning content
+  bool _showLearning = false;
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName();
+  }
+
+  Future<void> _fetchUserName() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final snapshot = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      setState(() {
+        userName = snapshot.data()?['name'] ?? 'Friend';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +87,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 5),
+
+                  if (userName != null)
+                    const SizedBox(height: 5),
                   Text(
-                    'Smart Money Management',
+                    'Welcome, $userName!',
                     style: GoogleFonts.poppins(
-                      color: Colors.white70,
-                      fontSize: 14,
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w300,
                     ),
                   ),
                 ],
@@ -100,18 +123,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (_) => RealTimeIndexScreen()),
               ),
             )
+
           ],
         ),
       ),
 
-
       body: _showLearning ? LoginScreen() : _buildHomeContent(context),
-
-
     );
   }
 
-  // Home Content wrapped in a SingleChildScrollView for scrolling.
   Widget _buildHomeContent(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
@@ -128,6 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: Column(
               children: [
+
+                const SizedBox(height: 10),
                 Text(
                   'Get Started',
                   style: GoogleFonts.poppins(
@@ -147,7 +169,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-
               ],
             ),
           ),
@@ -156,7 +177,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 const SizedBox(height: 20),
                 _buildFeatureCard(
                   context: context,
@@ -168,11 +188,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (_) => const ChatScreen()),
                   ),
                 ),
-
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
-                  icon: Icons.school_outlined, // Education/learning icon
+                  icon: Icons.school_outlined,
                   title: 'Start Learning',
                   description: 'Access educational content and resources',
                   onTap: () => Navigator.push(
@@ -180,7 +199,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (_) => LearningScreen()),
                   ),
                 ),
-
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
@@ -192,7 +210,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (_) => PortfolioRecommendationsScreen()),
                   ),
                 ),
-
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,
@@ -204,7 +221,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (_) => ProductFinderScreen()),
                   ),
                 ),
-
                 const SizedBox(height: 15),
                 _buildFeatureCard(
                   context: context,

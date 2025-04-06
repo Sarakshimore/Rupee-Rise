@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/auth_service.dart';
 import 'login_screen.dart';
 
@@ -12,13 +13,21 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final AuthService _authService = AuthService();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   void signUp() async {
     User? user = await _authService.signUpWithEmail(
         emailController.text, passwordController.text);
+
     if (user != null) {
+      // Save name to Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set({'name': nameController.text});
+
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (_) => const LoginScreen()));
     } else {
@@ -91,6 +100,12 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                           ),
                           const SizedBox(height: 24),
+                          _buildInputField(
+                            controller: nameController,
+                            label: "Name",
+                            isPassword: false,
+                          ),
+                          const SizedBox(height: 20),
                           _buildInputField(
                             controller: emailController,
                             label: "Email",

@@ -227,6 +227,7 @@ class _ProductFinderScreenState extends State<ProductFinderScreen> {
               ),
               child: buildFilterSection(
                 'Asset Type',
+
                 categories,
                 selectedCategories,
                     (option, isSelected) {
@@ -267,8 +268,8 @@ class _ProductFinderScreenState extends State<ProductFinderScreen> {
                   Text(
                     'Select Timeframe',
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFF388E3C),
-                      fontSize: 18,
+                      color: const Color(0xFF040404),
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

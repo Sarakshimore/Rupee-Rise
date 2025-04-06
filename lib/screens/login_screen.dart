@@ -24,10 +24,11 @@ class _LoginScreenState extends State<LoginScreen> {
           context, MaterialPageRoute(builder: (_) => HomeScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text("Login Failed"),
-              backgroundColor: Color(0xFF4CAF50)
-          ));
+        const SnackBar(
+          content: Text("Login Failed"),
+          backgroundColor: Color(0xFF4CAF50),
+        ),
+      );
     }
   }
 
@@ -37,6 +38,60 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (_) => HomeScreen()));
     }
+  }
+
+  void _showForgotPasswordDialog() {
+    final TextEditingController resetEmailController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Reset Password"),
+          content: TextField(
+            controller: resetEmailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              labelText: "Enter your email",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: const Text(
+                "Send Reset Link",
+                style: TextStyle(color: Color(0xFF4CAF50)),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+                try {
+                  await FirebaseAuth.instance
+                      .sendPasswordResetEmail(email: resetEmailController.text.trim());
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Password reset link sent!"),
+                      backgroundColor: Color(0xFF4CAF50),
+                    ),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Error: ${e.toString()}"),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -115,7 +170,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             label: "Password",
                             isPassword: true,
                           ),
-                          const SizedBox(height: 28),
+                          const SizedBox(height: 8),
+
+                          // Forgot Password link
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: _showForgotPasswordDialog,
+                              child: const Text(
+                                "Forgot Password?",
+                                style: TextStyle(
+                                  color: Color(0xFF4CAF50),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
                           _buildLoginButton(),
                           const SizedBox(height: 20),
                           _buildGoogleLoginButton(),
@@ -153,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color:  Colors.white, width: 2),
+          borderSide: const BorderSide(color: Colors.white, width: 2),
         ),
       ),
     );
